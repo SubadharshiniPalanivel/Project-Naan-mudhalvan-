@@ -1,0 +1,180 @@
+Here's a simple React application for a task management tool. This example uses functional components and hooks to manage the state.
+
+Steps:
+
+1. Initialize React App
+
+npx create-react-app task-manager
+cd task-manager
+npm start
+
+
+2. Create Components and Set up State
+
+
+
+Here’s a breakdown of the main components and features for the task management app:
+
+App.js
+
+This will be the main component where we'll define the application structure.
+
+import React, { useState } from "react";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
+import "./App.css";
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+
+  const addTask = (task) => {
+    setTasks([...tasks, { id: Date.now(), text: task, completed: false }]);
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  const toggleTaskCompletion = (id) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  return (
+    <div className="App">
+      <h1>Task Manager</h1>
+      <TaskForm addTask={addTask} />
+      <TaskList 
+        tasks={tasks} 
+        deleteTask={deleteTask} 
+        toggleTaskCompletion={toggleTaskCompletion} 
+      />
+    </div>
+  );
+}
+
+export default App;
+
+TaskForm.js
+
+This component handles input for adding new tasks.
+
+import React, { useState } from "react";
+
+function TaskForm({ addTask }) {
+  const [task, setTask] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (task.trim()) {
+      addTask(task);
+      setTask("");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Add a new task"
+        value={task}
+        onChange={(e) => setTask(e.target.value)}
+      />
+      <button type="submit">Add Task</button>
+    </form>
+  );
+}
+
+export default TaskForm;
+
+TaskList.js
+
+This component displays the list of tasks.
+
+import React from "react";
+import Task from "./Task";
+
+function TaskList({ tasks, deleteTask, toggleTaskCompletion }) {
+  return (
+    <ul>
+      {tasks.map((task) => (
+        <Task 
+          key={task.id} 
+          task={task} 
+          deleteTask={deleteTask} 
+          toggleTaskCompletion={toggleTaskCompletion} 
+        />
+      ))}
+    </ul>
+  );
+}
+
+export default TaskList;
+
+Task.js
+
+This component represents a single task, with options to complete and delete.
+
+import React from "react";
+
+function Task({ task, deleteTask, toggleTaskCompletion }) {
+  return (
+    <li style={{ textDecoration: task.completed ? "line-through" : "none" }}>
+      {task.text}
+      <button onClick={() => toggleTaskCompletion(task.id)}>
+        {task.completed ? "Undo" : "Complete"}
+      </button>
+      <button onClick={() => deleteTask(task.id)}>Delete</button>
+    </li>
+  );
+}
+
+export default Task;
+
+App.css
+
+Add some basic styles in App.css:
+
+.App {
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+button {
+  margin-left: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+Explanation
+
+App Component: Manages the tasks' state and passes functions to add, delete, and toggle task completion.
+
+TaskForm Component: Handles input to add new tasks.
+
+TaskList Component: Renders a list of tasks.
+
+Task Component: Represents each task, with options to complete or delete it.
+
+
+Running the App
+
+Run the application:
+
+npm start
+
+This will start the application on http://localhost:3000, where you can add, complete, and delete tasks. This setup provides basic functionality and can be further extended with features like persistent storage or a backend API.
+
